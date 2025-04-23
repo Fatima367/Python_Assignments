@@ -68,7 +68,7 @@ def is_locked_out():
 
 # UI with Streamlit
 st.set_page_config(
-    page_title="Data Encryption System", 
+    page_title="Secure Data Encryption", 
     page_icon="🔐", 
     layout="centered"
     )

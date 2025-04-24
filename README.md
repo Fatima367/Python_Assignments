@@ -1,2 +1,2 @@
 # Python_Assignments
-Python Assignments made in Google Colab.
+Python Assignments made in Google Colab and Projects.

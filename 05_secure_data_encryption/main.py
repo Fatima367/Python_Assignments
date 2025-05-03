@@ -46,9 +46,14 @@ if "current_user" not in st.session_state:
     st.session_state.current_user = None
 
 # Function to hash passkey
+# def hash_passkey(passkey):
+#     hashed = hashlib.pbkdf2_hmac('sha256', passkey.encode(), salt=b"somesalt", iterations=100_000)
+#     return base64.b64encode(hashed).decode()
+
 def hash_passkey(passkey):
-    hashed = hashlib.pbkdf2_hmac('sha256', passkey.encode(), salt=b"somesalt", iterations=100_000)
-    return base64.b64encode(hashed).decode()
+    salt = os.urandom(16)  # Secure random salt
+    hashed = hashlib.pbkdf2_hmac("sha256", passkey.encode(), salt, 100_000)
+    return base64.b64encode(salt + hashed).decode()
 
 # Function to encrypt data
 def encrypt_data(text):
@@ -64,6 +69,13 @@ def is_locked_out():
             return True
         st.session_state.failed_attempts = 0
     return False
+
+def verify_passkey(passkey, stored_value):
+    decoded = base64.b64decode(stored_value.encode())
+    salt = decoded[:16]
+    stored_hash = decoded[16:]
+    new_hash = hashlib.pbkdf2_hmac("sha256", passkey.encode(), salt, 100_000)
+    return new_hash == stored_hash
 
 
 # UI with Streamlit
@@ -130,7 +142,8 @@ elif choice == "Retrieve Data":
     passkey = st.text_input("Enter Passkey Again:", type="password")
 
     if st.button("Decrypt"):
-        if hash_passkey(passkey) == stored_data[user]["passkey"]:
+        # if hash_passkey(passkey) == stored_data[user]["passkey"]:
+        if verify_passkey(passkey, stored_data[user]["passkey"]):
             st.session_state.failed_attempts = 0
             is_title_matched = next((item for item in user_entries if item["title"] == selected_title), None)
 
@@ -177,7 +190,8 @@ elif choice == "My Account":
         passkey = st.text_input("Passkey", type="password")
 
         if st.button("Login"):
-            if username in stored_data and hash_passkey(passkey) == stored_data[username]["passkey"]:
+            # if username in stored_data and hash_passkey(passkey) == stored_data[username]["passkey"]:
+            if username in stored_data and verify_passkey(passkey, stored_data[username]["passkey"]):
                 st.session_state.current_user = username
                 st.session_state.failed_attempts = 0
                 st.success("✅ Login successful!")

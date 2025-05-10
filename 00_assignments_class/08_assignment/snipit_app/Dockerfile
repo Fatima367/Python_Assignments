@@ -1,7 +1,7 @@
 FROM python:3.10-slim
 
 WORKDIR /app
-COPY 00_assignments_class/08_assignment/snipit_app/ .
+COPY . .
 
 RUN pip install uv && uv pip install -r requirements.txt
 

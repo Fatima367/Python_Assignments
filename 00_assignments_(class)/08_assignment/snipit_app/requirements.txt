@@ -1,0 +1,7 @@
+streamlit
+python-dotenv
+google-generativeai
+openai-agents
+flask
+streamlit_option_menu
+fpdf

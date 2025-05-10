@@ -1,7 +1,6 @@
 FROM python:3.11-slim
 WORKDIR /app
 # Copy requirements.txt from subdirectory
-COPY 00_assignments_class/08_assignment/snipit_app/requirements.txt .
 RUN pip install uv
 RUN uv pip install --system --no-cache-dir -r requirements.txt
 # Copy the entire subdirectory

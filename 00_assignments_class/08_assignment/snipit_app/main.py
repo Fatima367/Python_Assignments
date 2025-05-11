@@ -14,6 +14,12 @@ from css_style import load_css
 import time
 import asyncio
 
+st.set_page_config(
+    page_title="Snipit",
+    page_icon="📜",
+    layout="wide"
+)
+
 USERS_STORAGE_FILE = "users.json"
 NOTES_STORAGE_FILE =  "notes.json"
 LOCKOUT_DURATION = 500

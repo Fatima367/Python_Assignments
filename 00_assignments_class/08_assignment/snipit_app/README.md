@@ -38,21 +38,21 @@ The application is built using Object-Oriented Programming principles:
    - Handles user authentication
    - Manages user sessions
 
-### OOP Principles Applied
+# OOP Principles Applied
 
-1. **Encapsulation**
+## 1. **Encapsulation**
    - Data and methods are encapsulated within the Notes class
    - Note properties (title, content, about, etc.) are bundled together
    - Implementation details are hidden from the user interface
 
-2. **Abstraction**
+## 2. **Abstraction**
    - Complex operations like note creation and retrieval are abstracted into simple method calls
    - Users interact with high-level functions without needing to understand the underlying implementation
 
-3. **Inheritance** (implied in the structure)
+## 3. **Inheritance** (implied in the structure)
    - Different note types (regular notes and cheat codes) share common properties and behaviors
 
-4. **Polymorphism**
+## 4. **Polymorphism**
    - The `get_user_notes()` method can filter notes based on type parameter
    - Same methods handle different types of notes (regular notes vs. cheat codes)
 

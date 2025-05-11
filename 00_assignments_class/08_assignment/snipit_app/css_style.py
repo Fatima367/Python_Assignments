@@ -32,7 +32,7 @@ def load_css():
     }
     .hero-container {
         text-align: center;
-        padding: 2rem 0;
+        padding: 1rem 0;
     }
     .cards-container {
         display: flex;

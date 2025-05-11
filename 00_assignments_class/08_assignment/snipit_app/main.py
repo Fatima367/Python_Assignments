@@ -10,7 +10,7 @@ import random
 import json
 import datetime
 from fpdf import FPDF
-from css_style2 import load_css
+from css_style import load_css
 import time
 import asyncio
 
@@ -212,8 +212,8 @@ def is_locked_out():
     return st.session_state.get("failed_attempts", 0) >= 3
 
 #---------------------------------------------------------------------------------------------------------
-    
-def generate_pdf(title, content, category= None):
+
+def generate_pdf(title, content, category=None):
     pdf = FPDF()
     pdf.add_page()
     
@@ -244,8 +244,7 @@ def generate_pdf(title, content, category= None):
         pdf.multi_cell(0, 10, line)
     
     # Return PDF as bytes
-    return pdf.output(dest="S").encode("latin1")
-
+    return pdf.output(dest="S").encode("latin1")    
 
 # Generating cheat codes with AI-----------------------------------------------------------------
 def generate_cheat_code(category, query):
@@ -323,7 +322,7 @@ def header():
     col1, col2, col3 = st.columns([5,1,1])
 
     with col1:
-        st.title("📝 NotesApp")
+        st.title("📜 Snipit")
 
     with col2:
         if st.session_state.is_logged_in:
@@ -344,7 +343,7 @@ def header():
 def footer():
     st.markdown("""
         <div style="text-align: center; margin-top: 3rem; padding: 1rem; background-color: #f8f9fa; border-radius: 10px;">
-            <p>Made by Fatima Faisal with ❤️ for learning and growth</p>
+            <p>Made by Fatima Faisal for learning and growth ✨</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -373,8 +372,7 @@ def sidebar():
 
 def home():
     st.markdown("<div class='hero-container'>", unsafe_allow_html=True)
-    st.markdown("<h1>Welcome to NotesApp</h1>", unsafe_allow_html=True)
-    st.markdown("<p>Your personal space for notes and cheat codes</p>", unsafe_allow_html=True)
+    st.markdown("<p>Smarter Notes, Faster Hacks – Unlock Learning with AI-Generated Cheat Codes.</p>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
@@ -563,6 +561,8 @@ def my_notes_page():
 def cheat_codes_list():
     st.markdown("<h2>My Cheat Codes</h2>", unsafe_allow_html=True)
 
+    cheat_codes = Notes.get_user_notes(note_type="cheat_code")
+
     if st.button("Find New Cheat Codes", key="find_new_cheat_codes"):
         st.session_state.cheat_code_step = 1
         st.session_state.cheat_code_category = None
@@ -570,8 +570,6 @@ def cheat_codes_list():
         st.session_state.cheat_code_query = None
         st.session_state.chat_history = []
         st.session_state.current_page = 'cheat_codes'
-
-        cheat_codes = Notes.get_user_notes(note_type="cheat_code")
 
         st.rerun()
 
@@ -942,12 +940,11 @@ def render_cheat_codes():
             st.session_state.cheat_code_result = None
             st.session_state.cheat_code_query = None
             st.session_state.chat_history = []
+            st.rerun()
              
         
         # Chat interface for continuing the conversation
         st.markdown("---")
-        st.subheader("Continue the conversation")
-        st.markdown("Ask for improvements, clarifications, or additional information about this cheat code.")
 
         chat_interface()
 

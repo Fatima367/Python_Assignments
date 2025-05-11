@@ -10,7 +10,7 @@ import random
 import json
 import datetime
 from fpdf import FPDF
-from css_style import load_css
+from css_style2 import load_css
 import time
 import asyncio
 

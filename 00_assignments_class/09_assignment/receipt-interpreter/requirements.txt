@@ -1,0 +1,6 @@
+streamlit
+streamlit
+python-dotenv
+google-generativeai
+openai-agents
+Pillow

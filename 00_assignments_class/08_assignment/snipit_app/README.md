@@ -2,7 +2,7 @@
 
 A personal space to save and organize notes, along with generating AI-powered cheat codes for multiple categories.
 
-(See the Project ↗)[https://snip-it.streamlit.app/]
+[See the Project ↗](https://snip-it.streamlit.app/)
 
 ## Project Overview
 

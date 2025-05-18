@@ -2,6 +2,8 @@
 
 A personal space to save and organize notes, along with generating AI-powered cheat codes for multiple categories.
 
+(See the Project ↗)[https://snip-it.streamlit.app/]
+
 ## Project Overview
 
 This Notes App is a Streamlit-based web application that provides users with a personal space to create, manage, and organize their notes. Additionally, it features an AI-powered "Cheat Codes" generator that can create quick reference guides for various categories like Math and Programming.

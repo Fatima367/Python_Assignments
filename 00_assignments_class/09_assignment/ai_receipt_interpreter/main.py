@@ -387,6 +387,8 @@ def delete_user_receipt(user_id, month_key, receipt_index):
 
 # ========================================== STREAMLIT UI ========================================================
 
+back_to_home_btn = "Back to Home"
+
 def header():
 
     col1, col2, col3 = st.columns([5,1,1])
@@ -503,7 +505,7 @@ def login_page():
             st.session_state.current_page = "register"
             st.rerun()
             
-        if st.button("Back to Home", key="back_home_btn"):
+        if st.button(back_to_home_btn, key="back_home_btn"):
             st.session_state.current_page = "home"
             st.session_state.show_receipt_history = False
             st.session_state.show_receipt_details = False
@@ -583,7 +585,7 @@ def receipt_history_ui():
     now = datetime.now()
     month_key = f"{now.year}-{now.month:02d}"
 
-    if st.button("Back to Home"):
+    if st.button(back_to_home_btn):
         st.session_state.show_receipt_history = False
         st.session_state.show_receipt_details = False
         st.session_state.selected_receipt = None
@@ -626,7 +628,7 @@ def receipt_history_ui():
 
 def receipt_details_ui():
 
-    if st.button("Back to Home"):
+    if st.button(back_to_home_btn):
         st.session_state.show_receipt_history = False
         st.session_state.show_receipt_details = False
         st.session_state.selected_receipt = None

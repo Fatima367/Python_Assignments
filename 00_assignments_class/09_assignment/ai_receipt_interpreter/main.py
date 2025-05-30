@@ -388,6 +388,7 @@ def delete_user_receipt(user_id, month_key, receipt_index):
 # ========================================== STREAMLIT UI ========================================================
 
 back_to_home_btn = "Back to Home"
+upgrade_plan_btn = "Upgrade Plan"
 
 def header():
 
@@ -452,7 +453,7 @@ def sidebar_upgrade_plan():
             )
 
             if current_plan == "Free":
-                if st.button("Upgrade Plan", key="sidebar_upgrade"):
+                if st.button(upgrade_plan_btn, key="sidebar_upgrade"):
                     st.session_state.show_upgrade_ui = True
             else:
                 if st.button("Downgrade To Free", key="sidebar_downgrade"):
@@ -718,7 +719,7 @@ def main():
         st.info(f"Receipts used this month: {used}/{FREE_RECEIPT_LIMIT}")
         if used >= FREE_RECEIPT_LIMIT:
             st.warning("You have reached your free limit for this month. Please upgrade to continue.")
-            if st.button("Upgrade Plan"):
+            if st.button(upgrade_plan_btn):
                 upgrade_plan_ui()
             return
         
@@ -754,7 +755,7 @@ def main():
         st.info("Integration with accounting software coming soon!")
 
     if plan == "Free":
-        if st.button("Upgrade Plan"):
+        if st.button(upgrade_plan_btn):
             upgrade_plan_ui()
 
 

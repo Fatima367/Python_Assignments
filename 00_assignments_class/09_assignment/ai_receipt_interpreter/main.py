@@ -245,7 +245,7 @@ def interpret_receipt(user_input):
     ])
 
     try:
-        cleaned_text = re.sub(r"(^```json|```$)", "", response.text.strip(), flags=re.MULTILINE).strip()
+        cleaned_text = re.sub(r"^(?:```json|```)$", "", response.text.strip(), flags=re.MULTILINE).strip()
         return json.loads(cleaned_text)
     except Exception as e:
         return {"error": f"Could not parse response. Raw output: {response.text}, Error: {str(e)}"}

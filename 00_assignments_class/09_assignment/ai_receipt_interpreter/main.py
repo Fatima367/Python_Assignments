@@ -23,6 +23,7 @@ USERS_STORAGE_FILE = "users.json"
 RECEIPTS_STORAGE_FILE = "receipts.json"
 FREE_RECEIPT_LIMIT = 5
 LOCKOUT_DURATION = 500
+CSV_MIME_TYPE = "text/csv"
 
 # ======================================== LOADING DATA ===================================================
 
@@ -621,7 +622,7 @@ def receipt_history_ui():
                 "Download CSV",
                 csv_string,
                 file_name=f"receipt_{i+1}.csv",
-                mime="text/csv",
+                mime=CSV_MIME_TYPE,
                 key=f"csv_{i}"
             )
             st.markdown("</div>", unsafe_allow_html=True)
@@ -677,7 +678,7 @@ def receipt_details_ui():
                         "Download this Receipt as CSV",
                         csv_str,
                         file_name="receipt.csv",
-                        mime="text/csv"
+                        mime=CSV_MIME_TYPE
                     )
         st.markdown('<div class="custom-div">', unsafe_allow_html=True)
 
@@ -735,7 +736,7 @@ def main():
             st.subheader("Extracted Expense Report")
             st.markdown(format_expense_report(receipt))
             csv_string = receipt_to_csv(receipt)
-            st.download_button("Export this receipt as CSV", csv_string, file_name="receipt.csv", mime="text/csv")
+            st.download_button("Export this receipt as CSV", csv_string, file_name="receipt.csv", mime=CSV_MIME_TYPE)
 
     st.subheader("Your Receipts This Month")
     receipts = get_user_receipts(user_id)
@@ -745,7 +746,7 @@ def main():
                 st.markdown(format_expense_report(receipt))
         
         csv_all_receipts = all_receipts_to_csv(receipts)
-        st.download_button("Export all receipts as CSV", csv_all_receipts, file_name="all_receipts.csv", mime="text/csv")
+        st.download_button("Export all receipts as CSV", csv_all_receipts, file_name="all_receipts.csv", mime=CSV_MIME_TYPE)
     else:
         st.info("No receipts uploaded this month.")
 

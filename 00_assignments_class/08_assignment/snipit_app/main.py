@@ -324,6 +324,9 @@ if 'note_colors' not in st.session_state:
     st.session_state.note_colors = ["#fff9c4", "#c8e6c9", "#bbdefb", "#f8bbd0", "#e1bee7"]
 
 # UI components----------------------------------------------------------------------------------------------
+
+back_button = "← Back"
+
 def header():
     col1, col2, col3 = st.columns([5,1,1])
 
@@ -478,14 +481,14 @@ def register_page():
             st.session_state.current_page = "login"
             st.rerun()
 
-        if st.button("← Back",  key="back_from_create"):
+        if st.button(back_button,  key="back_from_create"):
             st.session_state.current_page = "home"
             st.rerun()
 
 def create_note_page():
     st.markdown("<h2>Create Note</h2>", unsafe_allow_html=True)
 
-    if st.button("← Back", key="back_from_create"):
+    if st.button(back_button, key="back_from_create"):
         st.session_state.current_page = "home"
         st.rerun()
 
@@ -638,7 +641,7 @@ def view_note():
     
     st.markdown(f"<h2>{note['title']}</h2>", unsafe_allow_html=True)
 
-    if st.button("← Back", key="back_from_view"):
+    if st.button(back_button, key="back_from_view"):
         if note['type'] == 'cheat_code':
             st.session_state.current_page = 'cheat_codes_list'
             st.rerun()
@@ -708,7 +711,7 @@ def edit_note():
 
     st.markdown(f"<h2>Edit Note</h2>", unsafe_allow_html=True)
 
-    if st.button("← Back", key="back_from_edit"):
+    if st.button(back_button, key="back_from_edit"):
         st.session_state.current_page = "view_note"
         st.rerun()
 
@@ -753,7 +756,7 @@ def chat_interface():
 def render_cheat_codes():
     st.markdown("<h2>Find Cheat Codes</h2>", unsafe_allow_html=True)
 
-    if st.button("← Back", key="back_from_cheat_codes"):
+    if st.button(back_button, key="back_from_cheat_codes"):
         st.session_state.current_page = "home"
         st.rerun()
 

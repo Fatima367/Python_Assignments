@@ -3,7 +3,6 @@ import streamlit as st
 from dotenv import load_dotenv
 from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
 from instruction import instruction_for_gemini
-from streamlit_option_menu import option_menu
 import hashlib
 import base64
 import random
@@ -328,26 +327,24 @@ if 'note_colors' not in st.session_state:
 back_button = "← Back"
 
 def header():
-    col1, col2, col3 = st.columns([5,1,1])
+    col1, col2, col3 = st.columns([5, 1, 1])
 
     with col1:
         st.title("📜 Snipit")
 
     with col2:
-        if st.session_state.is_logged_in:
-            if st.button("Home", key="home_btn"):
-                st.session_state.current_page = "home"
-                st.rerun()
+        if st.session_state.is_logged_in and st.button("Home", key="home_btn"):
+            st.session_state.current_page = "home"
+            st.rerun()
+
     with col3:
         if st.session_state.is_logged_in:
             if st.button("Logout", key="logout_btn"):
                 Logout()
                 st.rerun()
-
-        else:
-            if st.button("Login", key="login_btn"):
-                st.session_state.current_page = 'login'
-                st.rerun()
+        elif st.button("Login", key="login_btn"):
+            st.session_state.current_page = "login"
+            st.rerun()
 
 def footer():
     st.markdown("""
@@ -514,58 +511,67 @@ def my_notes_page():
     if st.button("+ Create New Note", key="create_from_my_notes"):
         st.session_state.current_page = "create_note"
         st.rerun()
-    
 
     notes = Notes.get_user_notes(note_type="note")
 
     if not notes:
         st.info("You don't have any notes yet. Create your first note!")
-    else:
-        cols = st.columns(3)
-        for i, note in enumerate(notes):
-            with cols[i % 3]:
-                color = note.get("color", "#fff9c4")
-                starred = "⭐" if note.get("starred") else ""
+        return
 
-                note_key = f"note_{note["id"]}"
+    render_note_grid(notes)
 
-                st.markdown(
-                    f"""
-                    <div class='note-card' style='background-color: {color};'>
-                        <h3>{starred}{note['title']}</h3>
-                        <p style='color: #666; font-size: 0.8rem;'>{note['about']}</p>
-                        <p>{note['content'][:20]}{'...' if len(note['content']) > 20 else ''}</p>
-                        <p style='color: #999; font-size: 0.7rem; text-align: right;'>{note['created_at']}</p>
-                    </div>
-                    """, 
-                    unsafe_allow_html=True
-                )
 
-                col1, col2, col3, col4 = st.columns(4)
+def render_note_grid(notes):
+    cols = st.columns(3)
+    for i, note in enumerate(notes):
+        with cols[i % 3]:
+            render_note_card(note)
 
-                with col1:
-                    if st.button("📜", key=f"view_{note['id']}"):
-                        st.session_state.note_id = note["id"]
-                        st.session_state.current_page = "view_note"
-                        st.rerun()
-                with col2:
-                    if st.button("✏️", key=f"edit_{note['id']}"):
-                        st.session_state.note_id = note['id']
-                        st.session_state.current_page = 'edit_note'
-                        st.rerun()
-                         
-                
-                with col3:
-                    star_icon = "⭐" if note.get("starred") else "☆"
-                    if st.button(star_icon, key=f"star_{note['id']}"):
-                        Notes.is_starred(note['id'])
-                        st.rerun()
-                         
-                
-                with col4:
-                    if st.button("🗑️", key=f"delete_{note['id']}"):
-                        Notes.delete_note(note['id'])
-                        st.rerun()
+
+def render_note_card(note):
+    color = note.get("color", "#fff9c4")
+    starred = "⭐" if note.get("starred") else ""
+
+    st.markdown(
+        f"""
+        <div class='note-card' style='background-color: {color};'>
+            <h3>{starred}{note['title']}</h3>
+            <p style='color: #666; font-size: 0.8rem;'>{note['about']}</p>
+            <p>{note['content'][:20]}{'...' if len(note['content']) > 20 else ''}</p>
+            <p style='color: #999; font-size: 0.7rem; text-align: right;'>{note['created_at']}</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    render_note_actions(note)
+
+
+def render_note_actions(note):
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        if st.button("📜", key=f"view_{note['id']}"):
+            st.session_state.note_id = note["id"]
+            st.session_state.current_page = "view_note"
+            st.rerun()
+
+    with col2:
+        if st.button("✏️", key=f"edit_{note['id']}"):
+            st.session_state.note_id = note["id"]
+            st.session_state.current_page = "edit_note"
+            st.rerun()
+
+    with col3:
+        star_icon = "⭐" if note.get("starred") else "☆"
+        if st.button(star_icon, key=f"star_{note['id']}"):
+            Notes.is_starred(note["id"])
+            st.rerun()
+
+    with col4:
+        if st.button("🗑️", key=f"delete_{note['id']}"):
+            Notes.delete_note(note["id"])
+            st.rerun()
 
 def cheat_codes_list():
     st.markdown("<h2>My Cheat Codes</h2>", unsafe_allow_html=True)
@@ -573,62 +579,76 @@ def cheat_codes_list():
     cheat_codes = Notes.get_user_notes(note_type="cheat_code")
 
     if st.button("Find New Cheat Codes", key="find_new_cheat_codes"):
-        st.session_state.cheat_code_step = 1
-        st.session_state.cheat_code_category = None
-        st.session_state.cheat_code_result = None
-        st.session_state.cheat_code_query = None
-        st.session_state.chat_history = []
+        reset_cheat_code_session()
         st.session_state.current_page = 'cheat_codes'
-
         st.rerun()
 
-        if not cheat_codes:
-            st.info("You don't have any saved cheat codes yet. Find some now!")
-    else:
-        # Display cheat codes in a grid
-        cols = st.columns(3)
-        for i, code in enumerate(cheat_codes):
-            with cols[i % 3]:
-                color = code.get('color', '#bbdefb')
-                starred = "⭐ " if code.get('starred', False) else ""
-                
-                st.markdown(
-                    f"""
-                    <div style='background-color: {color}; border-radius: 10px; padding: 15px; margin-bottom: 15px;'>
-                        <h3>{starred}{code['title']}</h3>
-                        <p style='color: #666; font-size: 0.8rem;'>{code['about']}</p>
-                        <p>{code['content'][:100]}{'...' if len(code['content']) > 100 else ''}</p>
-                        <p style='color: #999; font-size: 0.7rem; text-align: right;'>{code['created_at']}</p>
-                    </div>
-                    """, 
-                    unsafe_allow_html=True
-                )
-                
-                # Create a row of buttons for each cheat code
-                col1, col2, col3, col4 = st.columns(4)
-                
-                with col1:
-                    if st.button("📜", key=f"view_{code['id']}"):
-                        st.session_state.note_id = code['id']
-                        st.session_state.current_page = 'view_note'
-                        st.rerun()
-                
-                with col2:
-                    if st.button("✏️", key=f"edit_{code['id']}"):
-                        st.session_state.note_id = code['id']
-                        st.session_state.current_page = 'edit_note'
-                        st.rerun()
-                                         
-                with col3:
-                    star_icon = "⭐" if code.get('starred', False) else "☆"
-                    if st.button(star_icon, key=f"star_{code['id']}"):
-                        Notes.is_starred(code['id'])
-                        st.rerun()
-                
-                with col4:
-                    if st.button("🗑️", key=f"delete_{code['id']}"):
-                        Notes.delete_note(code['id']) 
-                        st.rerun()  
+    if not cheat_codes:
+        st.info("You don't have any saved cheat codes yet. Find some now!")
+        return
+
+    render_cheat_code_grid(cheat_codes)
+
+
+def reset_cheat_code_session():
+    st.session_state.cheat_code_step = 1
+    st.session_state.cheat_code_category = None
+    st.session_state.cheat_code_result = None
+    st.session_state.cheat_code_query = None
+    st.session_state.chat_history = []
+
+
+def render_cheat_code_grid(cheat_codes):
+    cols = st.columns(3)
+    for i, code in enumerate(cheat_codes):
+        with cols[i % 3]:
+            render_cheat_code_card(code)
+
+
+def render_cheat_code_card(code):
+    color = code.get('color', '#bbdefb')
+    starred = "⭐ " if code.get('starred', False) else ""
+
+    st.markdown(
+        f"""
+        <div style='background-color: {color}; border-radius: 10px; padding: 15px; margin-bottom: 15px;'>
+            <h3>{starred}{code['title']}</h3>
+            <p style='color: #666; font-size: 0.8rem;'>{code['about']}</p>
+            <p>{code['content'][:100]}{'...' if len(code['content']) > 100 else ''}</p>
+            <p style='color: #999; font-size: 0.7rem; text-align: right;'>{code['created_at']}</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    render_cheat_code_buttons(code)
+
+
+def render_cheat_code_buttons(code):
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        if st.button("📜", key=f"view_{code['id']}"):
+            st.session_state.note_id = code['id']
+            st.session_state.current_page = 'view_note'
+            st.rerun()
+
+    with col2:
+        if st.button("✏️", key=f"edit_{code['id']}"):
+            st.session_state.note_id = code['id']
+            st.session_state.current_page = 'edit_note'
+            st.rerun()
+
+    with col3:
+        star_icon = "⭐" if code.get('starred', False) else "☆"
+        if st.button(star_icon, key=f"star_{code['id']}"):
+            Notes.is_starred(code['id'])
+            st.rerun()
+
+    with col4:
+        if st.button("🗑️", key=f"delete_{code['id']}"):
+            Notes.delete_note(code['id'])
+            st.rerun()
 
 def view_note():
     note = Notes.get_note(st.session_state.note_id)
@@ -638,8 +658,6 @@ def view_note():
         st.session_state.current_page = 'my_notes'
         st.rerun()
          
-    
-    st.markdown(f"<h2>{note['title']}</h2>", unsafe_allow_html=True)
 
     if st.button(back_button, key="back_from_view"):
         if note['type'] == 'cheat_code':
@@ -651,6 +669,8 @@ def view_note():
 
     color = note.get('color', '#fff9c4')
     starred = "⭐ " if note.get('starred', False) else ""
+    
+    st.markdown(f"<h2>{starred}{note['title']}</h2>", unsafe_allow_html=True)
     
     st.markdown(
         f"""
@@ -709,7 +729,7 @@ def edit_note():
         st.session_state.current_page = 'my_notes'
         st.rerun()
 
-    st.markdown(f"<h2>Edit Note</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>Edit Note</h2>", unsafe_allow_html=True)
 
     if st.button(back_button, key="back_from_edit"):
         st.session_state.current_page = "view_note"
@@ -748,11 +768,6 @@ def chat_interface():
             unsafe_allow_html=True
         )
 
-        # chat input 
-        # with st.form("chat_form"):
-        #     user_input = st.text_area("Your message:", key="user_message", height=100)
-        #     submit = st.form_submit_button("Send")
-
 def render_cheat_codes():
     st.markdown("<h2>Find Cheat Codes</h2>", unsafe_allow_html=True)
 
@@ -760,202 +775,131 @@ def render_cheat_codes():
         st.session_state.current_page = "home"
         st.rerun()
 
-    # Step 1: select a category section
-    if st.session_state.cheat_code_step == 1:
-        st.subheader("What type of cheat code are you looking for?")
+    step = st.session_state.get("cheat_code_step", 1)
+    
+    if step == 1:
+        render_category_selection()
+    elif step == 2:
+        render_query_input()
+    elif step == 3:
+        render_cheat_code_result()
 
-        # displaying category options
-        col1, col2, col3 = st.columns(3)
 
-        with col1:
-            st.markdown(
-                """
-                <div class='category-card' id='math-card'>
-                    <div style='font-size: 36px;'>🧮</div>
-                    <h3>Math</h3>
-                    <p>Formulas, equations, and calculations</p>
-                </div>
-                """, 
-                unsafe_allow_html=True
+def render_category_selection():
+    st.subheader("What type of cheat code are you looking for?")
+    categories = [
+        ("Math", "🧮", "Formulas, equations, and calculations"),
+        ("Code", "💻", "Programming syntax, functions, and snippets"),
+        ("Game", "🎮", "Game strategies, controls, and shortcuts"),
+        ("Science", "🔬", "Scientific principles, formulas, and concepts"),
+        ("Language", "🗣️", "Grammar rules, vocabulary, and expressions"),
+        ("Other", "🔍", "Any other type of cheat code"),
+    ]
+
+    for i in range(0, len(categories), 3):
+        cols = st.columns(3)
+        for col, (name, icon, desc) in zip(cols, categories[i:i+3]):
+            with col:
+                render_category_card(name, icon, desc)
+
+
+def render_category_card(name, icon, description):
+    st.markdown(
+        f"""
+        <div class='category-card' id='{name.lower()}-card'>
+            <div style='font-size: 36px;'>{icon}</div>
+            <h3>{name}</h3>
+            <p>{description}</p>
+        </div>
+        """, unsafe_allow_html=True
+    )
+    if st.button(f"Select {name}", key=f"select_{name.lower()}"):
+        st.session_state.cheat_code_category = name
+        st.session_state.cheat_code_step = 2
+        st.rerun()
+
+
+def render_query_input():
+    category = st.session_state.get("cheat_code_category", "")
+    st.subheader(f"What {category} cheat code are you looking for?")
+    show_examples_for_category(category)
+
+    query = st.text_input("Enter your specific query:")
+
+    if st.button("Generate Cheat Code") and query:
+        cheat_code = generate_cheat_code(category, query)
+        st.session_state.cheat_code_result = cheat_code
+        st.session_state.cheat_code_query = query
+        st.session_state.cheat_code_step = 3
+        st.rerun()
+
+    if st.button("← Back to Categories", key="back_to_categories"):
+        st.session_state.cheat_code_step = 1
+        st.session_state.cheat_code_category = None
+        st.rerun()
+
+
+def show_examples_for_category(category):
+    examples = {
+        "Math": "Examples: Pythagorean theorem, derivative rules, integration formulas",
+        "Code": "Examples: Python list comprehension, JavaScript promises, CSS flexbox",
+        "Game": "Examples: Minecraft crafting recipes, GTA cheat codes, Chess openings",
+        "Science": "Examples: Periodic table elements, Newton's laws, chemical reactions",
+        "Language": "Examples: Spanish conjugation, English irregular verbs, French phrases",
+        "Other": "Examples: Keyboard shortcuts, cooking measurements, gardening tips",
+    }
+    st.markdown(examples.get(category, ""))
+
+
+def render_cheat_code_result():
+    st.subheader(f"Cheat Code for: {st.session_state.cheat_code_query}")
+    st.markdown("<div class='cheat-code-container'>", unsafe_allow_html=True)
+    st.code(st.session_state.cheat_code_result)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        if st.button("📋 Copy to Clipboard", key="copy_result"):
+            st.success("Copied to clipboard!")
+
+    with col2:
+        pdf_bytes = generate_pdf(
+            f"Cheat Code: {st.session_state.cheat_code_query}",
+            st.session_state.cheat_code_result,
+            st.session_state.cheat_code_category
+        )
+        st.download_button(
+            label="📥 Download PDF",
+            data=pdf_bytes,
+            file_name=f"cheat_code_{st.session_state.cheat_code_query.replace(' ', '_').lower()}.pdf",
+            mime="application/pdf",
+            key="download_result"
+        )
+
+    with col3:
+        if st.button("💾 Save as Note", key="save_result"):
+            Notes.create_note(
+                title=f"Cheat Code: {st.session_state.cheat_code_query}",
+                content=st.session_state.cheat_code_result,
+                about=f"{st.session_state.cheat_code_category} Cheat Code",
+                type="cheat_code"
             )
-            if st.button("Select Math", key="select_math"):
-                st.session_state.cheat_code_category = "Math"
-                st.session_state.cheat_code_step = 2
-                st.rerun()
-
-        with col2: 
-            st.markdown(
-                """
-                <div class='category-card' id='code-card'>
-                    <div style='font-size: 36px;'>💻</div>
-                    <h3>Code</h3>
-                    <p>Programming syntax, functions, and snippets</p>
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
-            if st.button("Select Code", key="select_code"):
-                st.session_state.cheat_code_category = "Code"
-                st.session_state.cheat_code_step = 2
-                st.rerun()
-
-        with col3:
-            st.markdown(
-                """
-                <div class='category-card' id='game-card'>
-                    <div style='font-size: 36px;'>🎮</div>
-                    <h3>Game</h3>
-                    <p>Game strategies, controls, and shortcuts</p>
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
-            if st.button("Select Game", key="select_game"):
-                st.session_state.cheat_code_category = "Game"
-                st.session_state.cheat_code_step = 2
-                st.rerun()
-
-        # Second row of categories
-        col4, col5, col6 = st.columns(3)
-
-        with col4:
-            st.markdown(
-                """
-                <div class='category-card' id='science-card'>
-                    <div style='font-size: 36px;'>🔬</div>
-                    <h3>Science</h3>
-                    <p>Scientific principles, formulas, and concepts</p>
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
-            if st.button("Select Science", key="select_science"):
-                st.session_state.cheat_code_category = "Science"
-                st.session_state.cheat_code_step = 2
-                st.rerun()
-        
-        with col5:
-            st.markdown(
-                """
-                <div class='category-card' id='language-card'>
-                    <div style='font-size: 36px;'>🗣️</div>
-                    <h3>Language</h3>
-                    <p>Grammar rules, vocabulary, and expressions</p>
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
-            if st.button("Select Language", key="select_language"):
-                st.session_state.cheat_code_category = "Language"
-                st.session_state.cheat_code_step = 2
-                st.rerun()
-        
-        with col6:
-            st.markdown(
-                """
-                <div class='category-card' id='other-card'>
-                    <div style='font-size: 36px;'>🔍</div>
-                    <h3>Other</h3>
-                    <p>Any other type of cheat code</p>
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
-            if st.button("Select Other", key="select_other"):
-                st.session_state.cheat_code_category = "Other"
-                st.session_state.cheat_code_step = 2
-                st.rerun()
-
-    # second step: Enter query
-    elif st.session_state.cheat_code_step == 2:
-        st.subheader(f"What {st.session_state.cheat_code_category} cheat code are you looking for?")
-
-        # examples based on category
-        if st.session_state.cheat_code_category == "Math":
-            st.markdown("Examples: Pythagorean theorem, derivative rules, integration formulas")
-        elif st.session_state.cheat_code_category == "Code":
-            st.markdown("Examples: Python list comprehension, JavaScript promises, CSS flexbox")
-        elif st.session_state.cheat_code_category == "Game":
-            st.markdown("Examples: Minecraft crafting recipes, GTA cheat codes, Chess openings")
-        elif st.session_state.cheat_code_category == "Science":
-            st.markdown("Examples: Periodic table elements, Newton's laws, chemical reactions")
-        elif st.session_state.cheat_code_category == "Language":
-            st.markdown("Examples: Spanish conjugation, English irregular verbs, French phrases")
-        else:
-            st.markdown("Examples: Keyboard shortcuts, cooking measurements, gardening tips")
-
-
-        # input form for specific query:
-        # st.form("cheat_code_form"):
-        query = st.text_input("Enter your specific query:")
-        # submit = st.form_submit_button("Generate Cheat Code")
-
-        if st.button("Generate Cheat Code") and query:
-                cheat_code = generate_cheat_code(st.session_state.cheat_code_category, query)
-
-                st.session_state.cheat_code_result = cheat_code
-                st.session_state.cheat_code_query = query
-                st.session_state.cheat_code_step = 3
-                st.rerun()
-
-        if st.button("← Back to Categories", key="back_to_categories"):
-            st.session_state.cheat_code_step = 1
-            st.session_state.cheat_code_category = None
+            st.success("Cheat code saved successfully!")
+            time.sleep(1)
+            st.session_state.current_page = 'cheat_codes_list'
             st.rerun()
 
-    # Displaying results with options
-    elif st.session_state.cheat_code_step == 3:
-        st.subheader(f"Cheat Code for: {st.session_state.cheat_code_query}")
+    if st.button("🔍 New Search", key="new_search"):
+        st.session_state.cheat_code_step = 1
+        st.session_state.cheat_code_category = None
+        st.session_state.cheat_code_result = None
+        st.session_state.cheat_code_query = None
+        st.session_state.chat_history = []
+        st.rerun()
 
-        st.markdown("<div class='cheat-code-container'>", unsafe_allow_html=True)
-        st.code(st.session_state.cheat_code_result)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-            if st.button("📋 Copy to Clipboard", key="copy_result"):
-                st.success("Copied to clipboard!")
-
-        with col2:
-            pdf_bytes = generate_pdf(
-                f"Cheat Code: {st.session_state.cheat_code_query}", 
-                st.session_state.cheat_code_result, 
-                st.session_state.cheat_code_category
-            )
-            st.download_button(
-                label="📥 Download PDF",
-                data=pdf_bytes,
-                file_name=f"cheat_code_{st.session_state.cheat_code_query.replace(' ', '_').lower()}.pdf",
-                mime="application/pdf",
-                key="download_result"
-            )
-
-        with col3:
-            if st.button("💾 Save as Note", key="save_result"):
-                title = f"Cheat Code: {st.session_state.cheat_code_query}"
-                about = f"{st.session_state.cheat_code_category} Cheat Code"
-                Notes.create_note(title, st.session_state.cheat_code_result, about, type="cheat_code")
-                st.success("Cheat code saved successfully!")
-                time.sleep(1)
-                st.session_state.current_page = 'cheat_codes_list'
-                st.rerun()
-
-
-             # New search button
-        if st.button("🔍 New Search", key="new_search"):
-            st.session_state.cheat_code_step = 1
-            st.session_state.cheat_code_category = None
-            st.session_state.cheat_code_result = None
-            st.session_state.cheat_code_query = None
-            st.session_state.chat_history = []
-            st.rerun()
-             
-        
-        # Chat interface for continuing the conversation
-        st.markdown("---")
-
-        chat_interface()
+    st.markdown("---")
+    chat_interface()
 
 def main():
     load_css()

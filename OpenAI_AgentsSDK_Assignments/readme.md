@@ -22,6 +22,7 @@ Topics to Learn:
 
 Form : https://forms.gle/VtmLf8TNWZdrDBhN6
 
+-------
 
 #### 2.
 
@@ -36,14 +37,17 @@ inner_working_of_openai_agents_sdk
 Form: https://forms.gle/5JZeyVfJuhSnnDzg8
 
 
-#### 3. Smart Store Agent
+-----------
+
+#### 3. 
+##### - Smart Store Agent
 *File name*: product_suggester.py
 
 Create an agent that suggests a product based on user needs.
 
 Example: If the user says "I have a headache", it should suggest a medicine and explain why.
 
-#### 4. Mood Analyzer with Handoff
+##### - Mood Analyzer with Handoff
 
 *File name*: mood_handoff.py
 
@@ -55,7 +59,7 @@ If mood is “sad” or “stressed”, Agent 2 suggests an activity.
 
 Use Runner.run() for both agents and print the results.
 
-#### 5. Country Info Bot (Using Tools)
+##### - Country Info Bot (Using Tools)
 *File name*: country_info_toolkit.py
 
 Create 3 tool agents:
@@ -69,6 +73,13 @@ Create 3 tool agents:
 An orchestrator agent takes the country name and uses all 3 tools to give complete info.
 
 
-_____________
-
 Submit Assignment Here: https://forms.gle/tu5aubQMg4uM1f1w9
+
+---------
+
+#### 4. Console-Based Support Agent
+
+Build a **Console-Based Support Agent** System using OpenAI Agents SDK, [complete details](https://docs.google.com/document/d/1gZwuQuW5HTjNEVTfaGX56brdR5I0oj11/edit?usp=sharing&ouid=103459919058078389355&rtpof=true&sd=true).
+
+
+- Submission form: [https://forms.gle/1uwdntcc2CsjRRWe7](https://forms.gle/1uwdntcc2CsjRRWe7)

@@ -1,6 +1,6 @@
 ### Assignment
 
-# Console-Based Support Agent System using OpenAI Agents SDK"
+# Console-Based Support Agent System using OpenAI Agents SDK
 
 ### 🧠 Objective:
 **Build a multi-agent system in the console using the OpenAI Agents SDK. The system must:**

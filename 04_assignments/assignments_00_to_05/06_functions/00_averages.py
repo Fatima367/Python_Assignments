@@ -3,7 +3,9 @@ def average(a: float, b: float):
     Returns the number which is half way between a and b
     """
     sum = a + b
-    return sum / 2
+
+    average = sum / 2
+    return average
 
 def main():
     avg_1 = average(0,10)

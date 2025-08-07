@@ -8,7 +8,7 @@ class Car:
 
     @staticmethod
     def start():
-        return f"Car started..."
+        return "Car started..."
     
 
 car: Car = Car("Porsche")

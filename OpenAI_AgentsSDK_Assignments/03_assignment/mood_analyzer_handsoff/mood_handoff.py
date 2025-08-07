@@ -73,7 +73,7 @@ def main():
             run_config= config
             )
 
-        print(f"\nAgent's Response:\n")
+        print("\nAgent's Response:\n")
         print(f"{result.final_output}\n")
         print(f"Responded by: {result.last_agent.name}\n\n")
 

@@ -136,7 +136,7 @@ def main():
 
                     if st.button("Generate Password"):
                         password = generate_password(length, use_digits, use_special)
-                        st.write(f"Generated Password:")
+                        st.write("Generated Password:")
                         st.code(password)
 
 if __name__ == "__main__":

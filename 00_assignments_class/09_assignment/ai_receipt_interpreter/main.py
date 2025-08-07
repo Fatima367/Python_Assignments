@@ -654,7 +654,7 @@ def receipt_details_ui():
                         st.session_state.selected_receipt = None
                         st.rerun()
                 with col2:
-                    if st.button("Delete", key=f"delete"):
+                    if st.button("Delete", key="delete"):
                         # Find the index and month_key for the selected receipt
                         user_id = st.session_state.get("user_id")
                         now = datetime.now()

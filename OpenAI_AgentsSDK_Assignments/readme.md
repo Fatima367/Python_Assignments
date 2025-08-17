@@ -83,3 +83,29 @@ Build a **Console-Based Support Agent** System using OpenAI Agents SDK, [complet
 
 
 - Submission form: [https://forms.gle/1uwdntcc2CsjRRWe7](https://forms.gle/1uwdntcc2CsjRRWe7)
+
+
+-------------------------------------------------------
+
+#### 5. Bank Agent Mini Project
+
+Re-create the same **Bank Agent** mini project that was showed in the last class.
+
+Please follow the structure that the teacher demonstrated and submit the assignment before the next class.
+
+Best of luck! 👍
+
+[Complete details](https://shorturl.at/HgYoO)
+
+[Submission Form](https://forms.gle/T4AHNTgTCgHc4TZs5)
+
+
+---------------------------------
+
+#### 6. Library Assistant
+
+Make a Library Assistant using the OpenAI Agents SDK.
+
+[Complete details with submission form](https://shorturl.at/UqFB5)
+
+----------------------

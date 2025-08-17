@@ -1,6 +1,6 @@
 ### Assignment
 
-Assignment for this week is to re-create the same **Bank Agent** mini project that I showed you in the last class.
+Assignment for this week is to re-create the same **Bank Agent** mini project that was showed in the last class.
 
 #### ✅ Make sure your project includes:
 

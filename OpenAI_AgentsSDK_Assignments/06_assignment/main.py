@@ -130,7 +130,7 @@ def dynamic_instructions(wrapper: RunContextWrapper, agent: Agent):
             """
 
 
-async def main():
+def main():
     
     # Main Agent
 
@@ -157,7 +157,7 @@ async def main():
             break
 
         try:
-            result = await Runner.run(
+            result = Runner.run_sync(
                 agent, 
                 user_input, 
                 context= user1, 
@@ -169,4 +169,4 @@ async def main():
         
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

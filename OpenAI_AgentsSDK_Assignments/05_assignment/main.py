@@ -138,7 +138,6 @@ bank_agent= Agent(
     instructions= "You are a Bank Agent, you help customers with their questions",
     tools= [check_balance],
     handoffs= [loan_agent, customer_care_agent],
-    # output_type= MyOutput,
     input_guardrails=[check_bank_related_queries],
     output_guardrails= [check_output_guardrail],
     model= model

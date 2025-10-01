@@ -3,6 +3,8 @@
 
 class MathUtils:
     def __init__(self):
+        # This constructor is intentionally empty because the class only contains static methods 
+        # and requires no instance-specific state or initialization.
         pass
 
     @staticmethod

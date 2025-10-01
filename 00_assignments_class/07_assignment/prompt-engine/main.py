@@ -120,10 +120,9 @@ if not st.session_state.generated_prompt:
 
             col1, col2 = st.columns(2)
             with col1:
-                if st.session_state.current_step > 0:
-                    if st.button("← Previous"):
-                        st.session_state.current_step -= 1
-                        st.rerun()
+                if st.session_state.current_step > 0 and st.button("← Previous"):
+                    st.session_state.current_step -= 1
+                    st.rerun()
 
             with col2:
                 next_disabled = not st.session_state.answers.get(question['id'])

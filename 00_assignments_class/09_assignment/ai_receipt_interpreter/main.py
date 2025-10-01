@@ -759,8 +759,7 @@ def display_paid_features(plan):
     if plan != "Free":
         st.subheader("Accounting Software Integration (Paid Feature)")
         st.info("Integration with accounting software coming soon!")
-
-    if plan == "Free":
+    else:
         if st.button(upgrade_plan_btn):
             upgrade_plan_ui()
 

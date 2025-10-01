@@ -14,6 +14,9 @@ class Employee:
         self._salary = salary    # Can be accesed and used with in the class and its subclasses
         self.__ssn = ssn         # Can be accesed and used with in the class
 
+    def get_private_ssn(self, name: str):
+        if name.lower() == self.name.lower():
+            return self.__ssn
 
 employee: Employee = Employee("Shanzay", "100k", 1244)
 

@@ -231,7 +231,7 @@ def interpret_receipt(user_input):
     except Exception as e:
         return {"error": f"Could not open image: {e}"}
     
-    model = genai.GenerativeModel('gemini-1.5-flash') # Use latest Gemini version available
+    model = genai.GenerativeModel('gemini-2.5-flash') # Use latest Gemini version available
 
     # Call multimodal model
     response = model.generate_content([
@@ -684,50 +684,51 @@ def receipt_details_ui():
 
 
 
-def main():
+# -------------------------------- Extracted Helper Functions --------------------------------
 
-    header()
-    sidebar_user_info()
-    sidebar_upgrade_plan()
-    sidebar_receipt_history()
+def handle_auth_pages():
+    """Handles logic for login/register pages when the user is not logged in."""
+    if st.session_state.current_page == "login":
+        login_page()
+    elif st.session_state.current_page == "register":
+        register_page()
+    return True # Indicates that an auth page was displayed
 
-    if not st.session_state.get("is_logged_in"):
-        if st.session_state.current_page == "login":
-            login_page()
-        elif st.session_state.current_page == "register":
-            register_page()
-
+def handle_sidebar_views():
+    """Handles logic for showing upgrade or receipt history views triggered by sidebar buttons."""
     if st.session_state.get("show_upgrade_ui", False):
         upgrade_plan_ui()
-        return
+        return True 
 
     if st.session_state.get("show_receipt_history", False):
         if st.session_state.get("show_receipt_details", False):
             receipt_details_ui()
         else:
             receipt_history_ui()
-        return
-    
-    user_id = st.session_state.get("user_id")
+        return True 
+    return False
 
-    if not st.session_state.get("is_logged_in") or user_id is None:
-        return
-
-    plan = get_plan(user_id)
-    st.write(f"**Current Plan:** {plan}")
+def handle_free_plan_limits(user_id, plan):
+    """Checks free plan limits and displays warnings/upgrade options."""
     if plan == "Free":
         used = len(get_user_receipts(user_id))
         st.info(f"Receipts used this month: {used}/{FREE_RECEIPT_LIMIT}")
+        
         if used >= FREE_RECEIPT_LIMIT:
             st.warning("You have reached your free limit for this month. Please upgrade to continue.")
             if st.button(upgrade_plan_btn):
                 upgrade_plan_ui()
-            return
-        
+            return True # Limit reached, further actions should be blocked
+    return False
+
+def handle_receipt_upload(user_id):
+    """Handles the user's receipt upload and processing flow."""
     uploaded_file = st.file_uploader("Upload a receipt image", type=["jpg", "jpeg", "png"])
+    
     if uploaded_file and can_upload_receipt(user_id):
         with st.spinner("Processing..."):
             receipt = interpret_receipt(uploaded_file)
+            
         if "error" in receipt:
             st.error(receipt["error"])
         else:
@@ -738,8 +739,11 @@ def main():
             csv_string = receipt_to_csv(receipt)
             st.download_button("Export this receipt as CSV", csv_string, file_name="receipt.csv", mime=CSV_MIME_TYPE)
 
+def display_user_receipts(user_id):
+    """Displays the list of receipts uploaded this month."""
     st.subheader("Your Receipts This Month")
     receipts = get_user_receipts(user_id)
+    
     if receipts:
         for i, receipt in enumerate(receipts[::-1], 1):
             with st.expander(f"Receipt #{len(receipts)-i+1}"):
@@ -750,7 +754,8 @@ def main():
     else:
         st.info("No receipts uploaded this month.")
 
-    
+def display_paid_features(plan):
+    """Displays integration information and the upgrade button if applicable."""
     if plan != "Free":
         st.subheader("Accounting Software Integration (Paid Feature)")
         st.info("Integration with accounting software coming soon!")
@@ -759,7 +764,44 @@ def main():
         if st.button(upgrade_plan_btn):
             upgrade_plan_ui()
 
+# ----------------------------------------------------------------------------------------
 
+def main():
+    header()
+    sidebar_user_info()
+    sidebar_upgrade_plan()
+    sidebar_receipt_history()
+
+    # 1. Handle non-logged-in users
+    if not st.session_state.get("is_logged_in"):
+        handle_auth_pages()
+        return
+
+    # 2. Handle sidebar button views 
+    if handle_sidebar_views():
+        return
+    
+    user_id = st.session_state.get("user_id")
+
+    # 3. Early exit if not logged in or missing user_id 
+    if not st.session_state.get("is_logged_in") or user_id is None:
+        return
+
+    plan = get_plan(user_id)
+    st.write(f"**Current Plan:** {plan}")
+    
+    # 4. Handle free plan limit checks
+    if handle_free_plan_limits(user_id, plan):
+        return
+        
+    # 5. Handle receipt upload and processing
+    handle_receipt_upload(user_id)
+
+    # 6. Display user receipts 
+    display_user_receipts(user_id)
+    
+    # 7. Display paid features and final upgrade button
+    display_paid_features(plan)
 
 
 if __name__ == "__main__":

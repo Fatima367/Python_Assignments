@@ -2,9 +2,9 @@ def average(a: float, b: float):
     """
     Returns the number which is half way between a and b
     """
-    sum = a + b
+    total_sum = a + b
 
-    average = sum / 2
+    average = total_sum / 2
     return average
 
 def main():

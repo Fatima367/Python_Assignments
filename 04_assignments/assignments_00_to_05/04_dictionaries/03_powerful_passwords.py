@@ -37,14 +37,21 @@ def main():
         "student@stanford.edu": "882c6df720fd99f5eebb1581a1cf975625cea8a160283011c0b9512bb56c95fb"
     }
 
-    print(login("example@gmail.com", stored_logins, "word"))
-    print(login("example@gmail.com", stored_logins, "password"))
+    # Created variables instead of duplicating the email literals "student@stanford.edu", 
+    # "code_in_placer@cip.org" and "student@stanford.edu" 3 times.
+
+    first_email = "example@gmail.com"
+    second_email = "code_in_placer@cip.org"
+    third_email = "student@stanford.edu"
     
-    print(login("code_in_placer@cip.org", stored_logins, "Karel"))
-    print(login("code_in_placer@cip.org", stored_logins, "karel"))
+    print(login(first_email, stored_logins, "word"))
+    print(login(first_email, stored_logins, "password"))
     
-    print(login("student@stanford.edu", stored_logins, "password"))
-    print(login("student@stanford.edu", stored_logins, "123!456?789"))
+    print(login(second_email, stored_logins, "Karel"))
+    print(login(second_email, stored_logins, "karel"))
+    
+    print(login(third_email, stored_logins, "password"))
+    print(login(third_email, stored_logins, "123!456?789"))
 
 
 if __name__ == '__main__':

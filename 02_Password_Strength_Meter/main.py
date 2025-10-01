@@ -109,9 +109,8 @@ def main():
         st.markdown("Check the strength of your password")
         input_password = st.text_input("Enter your password here", type="password", help="Password should be at least 8-12 characters long and include a mix of uppercase, lowercase, numbers, and special characters.")
 
-        if st.button("Check Strength"):
-            if input_password:
-                st.session_state.score = check_password_strength(input_password)
+        if st.button("Check Strength") and input_password:
+            st.session_state.score = check_password_strength(input_password)
 
     if st.session_state.score is not None:
         with col2:

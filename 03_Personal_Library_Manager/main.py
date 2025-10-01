@@ -59,7 +59,7 @@ class BookCollection:
 
     def find_book(self):
         """Search for books in the collection by title or author name."""
-        search_type = input("Search by:\n1. Title\n2. Author\nEnter your choice: ")
+     # Unused =>   search_type = input("Search by:\n1. Title\n2. Author\nEnter your choice: ")
         search_text = input("Enter search term: ").lower()
         found_books = [
              book

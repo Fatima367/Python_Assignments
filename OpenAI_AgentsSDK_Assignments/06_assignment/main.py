@@ -165,7 +165,7 @@ def main():
             print(f"\n{result.final_output}")
         
         except InputGuardrailTripwireTriggered as e:
-            print(f"Library Assistant didn't respond to irrelevant questions")
+            print("Library Assistant didn't respond to irrelevant questions")
         
 
 if __name__ == "__main__":

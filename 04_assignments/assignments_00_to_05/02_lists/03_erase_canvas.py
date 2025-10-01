@@ -25,7 +25,7 @@ def erase_objects(canvas, eraser):
             canvas.set_color(overlapping_object, 'white')
 
 def main():
-    Canvas = Canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
+    canvas = Canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
 
     num_rows = CANVAS_HEIGHT // CELL_SIZE
     num_cols = CANVAS_WIDTH // CELL_SIZE

@@ -11,11 +11,11 @@ class Department:
         print(f"Department: {self.name} , Employee: {self.employee.employee_data()}")
 
 class Employee:
-    def __init__(self, emp):
-        self.employee = emp
+    def __init__(self, employee_name):
+        self.name = employee_name
     
     def employee_data(self):
-        return self.employee
+        return self.name
 
 
 employee: Employee = Employee("Karen")

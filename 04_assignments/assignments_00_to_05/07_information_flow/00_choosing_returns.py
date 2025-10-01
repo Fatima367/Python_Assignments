@@ -6,7 +6,7 @@ def is_adult(age: int):
     return False
 
 def main():
-    age : str = int(input("How old are you?: "))
+    age : int = int(input("How old are you?: "))
     print(is_adult(age))
 
 if __name__ == "__main__":

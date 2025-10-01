@@ -37,7 +37,7 @@ def main():
             right_x = left_x + CELL_SIZE
             bottom_y = top_y + CELL_SIZE
 
-            cell = canvas.create_rectangle(left_x, top_y ,right_x , bottom_y)
+            # Unused => cell = canvas.create_rectangle(left_x, top_y ,right_x , bottom_y)
 
     canvas.wait_forclick()
 

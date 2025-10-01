@@ -4,7 +4,7 @@
 
 # The equation you should use for converting from Fahrenheit to Celsius is the following:
 
-# degrees_celsius = (degrees_fahrenheit - 32) * 5.0/9.0
+# Equation => degrees_celsius = (degrees_fahrenheit - 32) * 5.0/9.0
 
 # (Note. The .0 after the 5 and 9 matters in the line above!!!)
 

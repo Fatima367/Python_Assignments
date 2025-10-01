@@ -559,7 +559,7 @@ def upgrade_plan_ui():
     expiry = st.text_input("Expiry (MM/YY)", key="expiry")
     cvv = st.text_input("CVV", key="cvv")
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, _, _, col4 = st.columns(4)
 
     with col1:
         if st.button("Upgrade"):

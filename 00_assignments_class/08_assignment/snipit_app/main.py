@@ -456,7 +456,7 @@ def login_page():
 def register_page():
     st.markdown("<h2 style='text-align: center;'>Register</h2>", unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1,2,1])
+    _, col2, _ = st.columns([1,2,1])
 
     with col2:
         with st.form("register_form"):

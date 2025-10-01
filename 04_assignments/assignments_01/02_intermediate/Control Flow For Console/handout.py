@@ -1,6 +1,7 @@
 import random
 
 NUM_ROUNDS = 5
+MESSAGE= "You were right! The computer's number was"
 
 def main():
     print("\nWelcome to the High-Low Game!")
@@ -19,11 +20,11 @@ def main():
         user_guess = input("Do you think your number is higher or lower than the computer's?: ")
 
         if user_guess.strip().lower() == 'lower' and user_number < computer_number:
-            print(f"You were right! The computer's number was {computer_number}")
+            print(f"{MESSAGE} {computer_number}")
             score += 1
 
         elif user_guess.strip().lower() == 'higher' and user_number > computer_number:
-            print(f"You were right! The computer's number was {computer_number}")
+            print(f"{MESSAGE} {computer_number}")
             score += 1
 
         else:

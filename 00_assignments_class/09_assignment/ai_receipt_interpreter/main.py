@@ -416,16 +416,14 @@ def header():
                 unsafe_allow_html=True
             )
     with col3:
-        if st.session_state.get("is_logged_in"):
-            if st.button("Logout"):
-                Logout()
+        if st.session_state.get("is_logged_in") and st.button("Logout"):
+            Logout()
+            st.session_state.current_page = "login"
+            st.rerun()
+        else:
+            if not st.session_state.get("is_logged_in") and st.button("Login"):
                 st.session_state.current_page = "login"
                 st.rerun()
-        else:
-            if not st.session_state.get("is_logged_in"):
-                if st.button("Login"):
-                    st.session_state.current_page = "login"
-                    st.rerun()
 
 def sidebar_user_info():
     if st.session_state.get("is_logged_in"):
